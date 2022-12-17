@@ -3,61 +3,13 @@
 #include <ncurses.h>
 
 
-typedef unsigned char byte;
+#include "game.h"
 
 
-void setCell(int w, int h, byte matrix[w][h], int i, int j, byte value) {
-	if (i >= w || i < 0) return;
-	if (j >= h || j < 0) return;
 
-	matrix[i][j] = value;
-}
+void show (int w, int h, byte matrix[w][h], int rows, int columns);
 
-void addValueToCell(int w, int h, byte matrix[w][h], int i, int j, byte value) {
-	if (i >= w || i < 0) return;
-	if (j >= h || j < 0) return;
 
-	matrix[i][j] += value;
-}
-
-void compute (int w, int h, byte from[w][h], byte to[w][h]) {
-	memset(to, 0, w * h * sizeof(byte)); 
-
-	for (int i = 0; i < w; i++) {
-		for (int j = 0; j < h; j++) {
-			if (from[i][j] == 3 || from[i][j] >> 1 == 9) {
-				// is alive
-				addValueToCell(w, h, to, i, j, 1<<4);
-
-				// add neighbours counter
-				addValueToCell(w, h, to, i-1, j-1, 1);
-				addValueToCell(w, h, to, i-1, j  , 1);
-				addValueToCell(w, h, to, i-1, j+1, 1);
-
-				addValueToCell(w, h, to, i  , j-1, 1);
-				addValueToCell(w, h, to, i  , j+1, 1);
-
-				addValueToCell(w, h, to, i+1, j-1, 1);
-				addValueToCell(w, h, to, i+1, j  , 1);
-				addValueToCell(w, h, to, i+1, j+1, 1);
-			}
-		}
-	}
-}
-
-void show (int w, int h, byte matrix[w][h], int rows, int columns) {
-	for(int i = 0; i < w && i < rows; i++) {
-		for(int j = 0; j < h && j < columns; j++) {
-			char r;
-			if (matrix[i][j] & 1<<4)
-				r = 'O';
-			else 
-				r = ' ';
-			mvaddch(i, j, r);
-		}
-	}
-	refresh();
-}
 
 int main() {
 	initscr();
@@ -74,7 +26,7 @@ int main() {
 	memset(state, 0, 2 * w * h * sizeof(byte)); 
 
 	/* glider */
-	byte istate[5][5] = {
+	byte glider[5][5] = {
 		{ 0,  0,  1,  1,  1},
 		{ 1,  1,  3, 17,  2},
 		{ 1, 17,  5, 19,  3},
@@ -83,19 +35,26 @@ int main() {
 	};
 
 	/* blinker */
-	// byte istate[5][5] = {
-	// 	{ 0,  1,  1,  1,  0},
-	// 	{ 0,  2, 17,  2,  0},
-	// 	{ 0,  3, 18,  3,  0},
-	// 	{ 0,  2, 17,  2,  0},
-	// 	{ 0,  1,  1,  1,  0}
-	// };
+	byte blinker[5][5] = {
+		{ 0,  1,  1,  1,  0},
+		{ 0,  2, 17,  2,  0},
+		{ 0,  3, 18,  3,  0},
+		{ 0,  2, 17,  2,  0},
+		{ 0,  1,  1,  1,  0}
+	};
 
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
-			state[0][i][j] = istate[i][j];
+			state[0][i][j] = glider[i][j];
 		}
 	}
+
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			state[0][i][j+10] = blinker[i][j];
+		}
+	}
+
 
 
 	for (int i = 0; ; i++) {
@@ -107,4 +66,20 @@ int main() {
 
 	endwin();
 	return 0;
+}
+
+
+
+void show (int w, int h, byte matrix[w][h], int rows, int columns) {
+	for(int i = 0; i < w && i < rows; i++) {
+		for(int j = 0; j < h && j < columns; j++) {
+			char r;
+			if (matrix[i][j] & 1<<4)
+				r = 'O';
+			else 
+				r = '_';
+			mvaddch(i, j, r);
+		}
+	}
+	refresh();
 }
