@@ -36,12 +36,19 @@ int main() {
 		{0, 1, 0},
 		{0, 1, 0}
 	};
+	byte toad[4][4] = {
+		{0, 0, 0, 0},
+		{0, 1, 1, 1},
+		{1, 1, 1, 0},
+		{0, 0, 0, 0}
+	};
 
 
 	addPattern(w, h, state[0], 3, 3, glider, 0, 0);
 	addPattern(w, h, state[0], 3, 3, glider, 10, 10);
 	addPattern(w, h, state[0], 3, 3, blinker, 10, 0);
 	addPattern(w, h, state[0], 3, 3, blinker, 20, 20);
+	addPattern(w, h, state[0], 4, 4, toad, 40, 40);
 
 
 

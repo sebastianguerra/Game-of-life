@@ -65,17 +65,15 @@ void addPattern(int w1, int h1, byte matrix[w1][h1], int w2, int h2, byte patter
 			byte prev = matrix[i+x][j+y];
 			byte new = pattern[i][j];
 
-			if ( (prev & 1<<4) == new << 4) continue; // if the cells are both alive or dead then do nothing
+			if ( prev >> 4 == new) continue; // if the cells are both alive or dead then do nothing
 
 			if (new) { // if the new cell is alive then:
-				// is alive
-				addValueToCell(w1, h1, matrix, x+i, y+j, 1 << 4);
+				setCell(w1, h1, matrix, x+i, y+j, prev | 1 << 4);
 
 				// add neighbours counter
 				changeNeighbours(w1, h1, matrix, x+i, y+j, 1);
 			} else { // if now is dead then:
-				byte newValue = prev - (1<<4);
-				setCell(w1, h1, matrix, x+i, y+j, newValue);
+				setCell(w1, h1, matrix, x+i, y+j, prev & 15);
 
 				// substract from neighbours counter
 				changeNeighbours(w1, h1, matrix, x+i, y+j, -1);
