@@ -14,7 +14,7 @@ BIN=$(BUILD)/$(OUTPUT)
 all: $(BIN)
 
 $(BIN): $(SRC)/main.c
-	$(COMPILER) $(FLAGS) $(SRC)/main.c -o $(BIN)
+	$(COMPILER) $(FLAGS) -lncurses $(SRC)/main.c -o $(BIN)
 
 
 
