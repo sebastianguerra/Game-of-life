@@ -1,25 +1,36 @@
 COMPILER=gcc
 FLAGS=-Wall -g
-NAME=a.out
 
-all: a.out
+OUTPUT=a.out
+
+SRC=src
+BUILD=build
+BIN=$(BUILD)/$(OUTPUT)
 
 
-a.out: src/main.c
-	$(COMPILER) $(FLAGS) src/main.c -o $(NAME)
+
+
+
+all: $(BIN)
+
+$(BIN): $(SRC)/main.c
+	$(COMPILER) $(FLAGS) $(SRC)/main.c -o $(BIN)
+
+
+
 
 
 .PHONY: run clear debug memcheck
 
 
-run: $(NAME)
-	./$(NAME)
+run: $(BIN)
+	./$(BIN)
 
 clear:
-	rm *.o $(NAME)
+	rm $(BUILD)/*
 
-debug: $(NAME)
-	gdb $(NAME)
+debug: $(BIN)
+	gdb $(BIN)
 
-memcheck: $(NAME)
-	valgrind ./$(NAME)
+memcheck: $(BIN)
+	valgrind ./$(BIN)
