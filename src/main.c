@@ -25,35 +25,23 @@ int main() {
 	byte state[2][w][h];
 	memset(state, 0, 2 * w * h * sizeof(byte)); 
 
-	/* glider */
-	byte glider[5][5] = {
-		{ 0,  0,  1,  1,  1},
-		{ 1,  1,  3, 17,  2},
-		{ 1, 17,  5, 19,  3},
-		{ 1,  2, 19, 18,  2},
-		{ 0,  1,  2,  2,  1}
+
+	byte glider[3][3] = {
+		{0, 0, 1},
+		{1, 0, 1},
+		{0, 1, 1}
+	};
+	byte blinker[3][3] = {
+		{0, 1, 0},
+		{0, 1, 0},
+		{0, 1, 0}
 	};
 
-	/* blinker */
-	byte blinker[5][5] = {
-		{ 0,  1,  1,  1,  0},
-		{ 0,  2, 17,  2,  0},
-		{ 0,  3, 18,  3,  0},
-		{ 0,  2, 17,  2,  0},
-		{ 0,  1,  1,  1,  0}
-	};
 
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			state[0][i][j] = glider[i][j];
-		}
-	}
-
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			state[0][i][j+10] = blinker[i][j];
-		}
-	}
+	addPattern(w, h, state[0], 3, 3, glider, 0, 0);
+	addPattern(w, h, state[0], 3, 3, glider, 10, 10);
+	addPattern(w, h, state[0], 3, 3, blinker, 10, 0);
+	addPattern(w, h, state[0], 3, 3, blinker, 20, 20);
 
 
 
