@@ -7,7 +7,7 @@
 
 
 
-void show (int w, int h, byte matrix[w][h], int rows, int columns);
+void show (int w, int h, byte matrix[w][h], int rows, int columns, int x, int y);
 
 
 
@@ -15,6 +15,9 @@ int main() {
 	initscr();
 
 	curs_set(0);
+	noecho();
+	cbreak();
+	timeout(0);
 
 	int row, col;
 	getmaxyx(stdscr, row, col);
@@ -49,12 +52,25 @@ int main() {
 	addPattern(w, h, state[0], 3, 3, blinker, 10, 0);
 	addPattern(w, h, state[0], 3, 3, blinker, 20, 20);
 	addPattern(w, h, state[0], 4, 4, toad, 40, 40);
+	addPattern(w, h, state[0], 3, 3, glider, 0, 40);
 
-
+	int x = 0, y = 0;
 
 	for (int i = 0; ; i++) {
+		int c = getch();
+		switch(c){
+			case 'h':
+				x++;break;
+			case 'j':
+				y--;break;
+			case 'k':
+				y++;break;
+			case 'l':
+				x--;break;
+		}
+		flushinp();
 		getmaxyx(stdscr, row, col);
-		show(w, h, state[i%2], row, col);
+		show(w, h, state[i%2], row, col, y, x);
 		compute(w, h, state[i%2], state[(i+1)%2]);
 		napms(100);
 	}
@@ -65,15 +81,16 @@ int main() {
 
 
 
-void show (int w, int h, byte matrix[w][h], int rows, int columns) {
-	for(int i = 0; i < w && i < rows; i++) {
-		for(int j = 0; j < h && j < columns; j++) {
+void show (int w, int h, byte matrix[w][h], int rows, int columns, int x, int y) {
+	clear();
+	for(int i = 0; i < w; i++) {
+		for(int j = 0; j < h; j++) {
 			char r;
 			if (matrix[i][j] & 1<<4)
 				r = 'O';
 			else 
 				r = '_';
-			mvaddch(i, j, r);
+			mvaddch(i+x, j+y, r);
 		}
 	}
 	refresh();
