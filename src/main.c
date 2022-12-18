@@ -39,20 +39,30 @@ int main() {
 		{0, 1, 0},
 		{0, 1, 0}
 	};
-	byte toad[4][4] = {
-		{0, 0, 0, 0},
+	byte toad[2][4] = {
 		{0, 1, 1, 1},
 		{1, 1, 1, 0},
-		{0, 0, 0, 0}
+	};
+	byte gosperglidergun[9][50] = {
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+		{0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+		{1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 	};
 
 
-	addPattern(w, h, state[0], 3, 3, glider, 0, 0);
-	addPattern(w, h, state[0], 3, 3, glider, 10, 10);
-	addPattern(w, h, state[0], 3, 3, blinker, 10, 0);
+	addPattern(w, h, state[0], 3, 3,  glider,  0, 20);
+	addPattern(w, h, state[0], 3, 3,  glider, 10, 20);
+	addPattern(w, h, state[0], 3, 3, blinker, 10, 20);
 	addPattern(w, h, state[0], 3, 3, blinker, 20, 20);
-	addPattern(w, h, state[0], 4, 4, toad, 40, 40);
-	addPattern(w, h, state[0], 3, 3, glider, 0, 40);
+	addPattern(w, h, state[0], 2, 4,    toad, 80, 20);
+	addPattern(w, h, state[0], 3, 3,  glider,  0, 40);
+	addPattern(w, h, state[0], 9, 50, gosperglidergun, 1, 1);
 
 	int x = 0, y = 0;
 
@@ -72,7 +82,7 @@ int main() {
 		getmaxyx(stdscr, row, col);
 		show(w, h, state[i%2], row, col, y, x);
 		compute(w, h, state[i%2], state[(i+1)%2]);
-		napms(100);
+		napms(10);
 	}
 
 	endwin();
@@ -89,7 +99,7 @@ void show (int w, int h, byte matrix[w][h], int rows, int columns, int x, int y)
 			if (matrix[i][j] & 1<<4)
 				r = 'O';
 			else 
-				r = '_';
+				r = '.';
 			mvaddch(i+x, j+y, r);
 		}
 	}

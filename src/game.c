@@ -57,7 +57,7 @@ w2, h2 -> size of pattern
 x, y -> location in matrix where pattern will be inserted
 */
 
-void addPattern(int w1, int h1, byte matrix[w1][h1], int w2, int h2, byte pattern[w2][h2], int x, int y) {
+void addPattern(int w1, int h1, byte matrix[w1][h1], int w2, int h2, byte pattern[w2][h2], int y, int x) {
 	for(int i = 0; i < w2; i++ ) {
 		for(int j = 0; j < h2; j++ ) {
 			if ( i + x >= w1 || j + y >= h1 ) continue;
