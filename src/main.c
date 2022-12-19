@@ -98,10 +98,16 @@ int main() {
 			case 'l':
 				x--;break;
 		}
-		flushinp();
-		getmaxyx(stdscr, row, col);
+
+		flushinp(); // Evita que quede input almacenado al mantener una tecla
+					// apretada y que al soltarla la siga recibiendo
+		getmaxyx(stdscr, row, col); // reinica tamano terminal por si se modifico
+
+		//// Realiza una iteracion del juego
 		show(w, h, state[i%2], row, col, y, x);
 		compute(w, h, state[i%2], state[(i+1)%2]);
+
+		// delay
 		napms(10);
 	}
 
