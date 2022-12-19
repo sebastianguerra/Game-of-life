@@ -32,4 +32,4 @@ El primer caso lo simplifico con un desplazamiento a la derecha y comparandolo c
  - [ ] Implementar sistema de detencion y resumen de la simulacion
  - [ ] Mostrar estadisticas en la pantalla
  - [ ] Implementar insertar o eliminar celula viva
- - [ ] Implementar modificar velocidad desde el juego
+ - [x] Implementar modificar velocidad desde el juego

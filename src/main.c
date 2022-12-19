@@ -55,6 +55,7 @@ int main() {
 	cbreak();    // evita el buffering pero CTRL-C sigue funcionando normal
 	timeout(0);  // No espera el input en un getch()
 
+	int fps = 60;
 
 
 
@@ -63,13 +64,13 @@ int main() {
 	getmaxyx(stdscr, row, col);
 
 	// w, h: Tamano matriz
-	int w = row*2, h = col*2;
+	int w = row, h = col;
 
 	// state: Pareja de matrices de tamano WxH que almacenan informacion
 	// 		  del estado actual del juego. 
 	//		  Se usa una pareja para alternar la matriz en la que se escribira 
 	//		  la informacion en cada turno.
-	byte state[2][w][h];
+	byte state[2][h][w];
 	memset(state, 0, 2 * w * h * sizeof(byte)); // inicializa los arrays a 0
 
 
@@ -90,13 +91,21 @@ int main() {
 		int c = getch();
 		switch(c){
 			case 'h':
-				x++;break;
-			case 'j':
-				y--;break;
-			case 'k':
 				y++;break;
-			case 'l':
+			case 'j':
 				x--;break;
+			case 'k':
+				x++;break;
+			case 'l':
+				y--;break;
+
+			case '-':
+				fps-=1;
+				break;
+			case '+':
+				fps+=1;
+				break;
+			
 			case 'q':
 				goto end_loop;
 		}
@@ -106,11 +115,14 @@ int main() {
 		getmaxyx(stdscr, row, col); // reinica tamano terminal por si se modifico
 
 		//// Realiza una iteracion del juego
-		show(w, h, state[i%2], row, col, y, x);
+		show(w, h, state[i%2], row, col, x, y);
 		compute(w, h, state[i%2], state[(i+1)%2]);
 
+		mvprintw(row-1, col-10, "FPS: %d", fps);
+		refresh();
+
 		// delay
-		napms(10);
+		napms(1000/fps);
 	}
 
 	end_loop:
@@ -126,10 +138,10 @@ void show (int w, int h, byte matrix[w][h], int rows, int columns, int x, int y)
 	for(int i = 0; i < w; i++) {
 		for(int j = 0; j < h; j++) {
 			char r;
-			if (matrix[i][j] & 1<<4)
-				r = 'O';
-			else 
-				r = '.';
+
+			// el quinto bit indica el estado de la celula
+			r = (matrix[i][j] >> 4) ? 'O' : '.';
+
 			mvaddch(i+x, j+y, r);
 		}
 	}
