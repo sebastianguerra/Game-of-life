@@ -29,7 +29,7 @@ El primer caso lo simplifico con un desplazamiento a la derecha y comparandolo c
  - [x] Implementar movimiento con hjkl
  - [x] Facilitar insercion de patrones desde el codigo
  - [ ] Implementar insercion de patrones desde el juego
- - [ ] Implementar sistema de detencion y resumen de la simulacion
+ - [x] Implementar sistema de detencion y resumen de la simulacion
  - [ ] Mostrar estadisticas en la pantalla
  - [ ] Implementar insertar o eliminar celula viva
  - [x] Implementar modificar velocidad desde el juego

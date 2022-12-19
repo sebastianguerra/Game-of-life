@@ -56,6 +56,7 @@ int main() {
 	timeout(0);  // No espera el input en un getch()
 
 	int fps = 60;
+	int running = 1;
 
 
 
@@ -87,7 +88,7 @@ int main() {
 	// x, y: Posicion actual de la vista
 	int x = 0, y = 0;
 
-	for (int i = 0; ; i++) {
+	for (int i = 0; ; i+=running) {
 		int c = getch();
 		switch(c){
 			case 'h':
@@ -106,6 +107,10 @@ int main() {
 				fps+=1;
 				break;
 			
+			case 'p':
+				running = !running;
+				break;
+			
 			case 'q':
 				goto end_loop;
 		}
@@ -116,7 +121,8 @@ int main() {
 
 		//// Realiza una iteracion del juego
 		show(w, h, state[i%2], row, col, x, y);
-		compute(w, h, state[i%2], state[(i+1)%2]);
+		if (running)
+			compute(w, h, state[i%2], state[(i+1)%2]);
 
 		mvprintw(row-1, col-10, "FPS: %d", fps);
 		refresh();
