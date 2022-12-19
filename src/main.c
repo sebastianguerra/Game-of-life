@@ -7,6 +7,7 @@
 
 
 
+void drawScreen(int w, int h, byte matix[w][h], int rows, int columns, int x, int y, int fps);
 void show (int w, int h, byte matrix[w][h], int rows, int columns, int x, int y);
 
 
@@ -92,13 +93,21 @@ int main() {
 		int c = getch();
 		switch(c){
 			case 'h':
-				y++;break;
+				y++;
+				drawScreen(w, h, state[(i/10)%2], row, col, x, y, fps);
+				break;
 			case 'j':
-				x--;break;
+				x--;
+				drawScreen(w, h, state[(i/10)%2], row, col, x, y, fps);
+				break;
 			case 'k':
-				x++;break;
+				x++;
+				drawScreen(w, h, state[(i/10)%2], row, col, x, y, fps);
+				break;
 			case 'l':
-				y--;break;
+				y--;
+				drawScreen(w, h, state[(i/10)%2], row, col, x, y, fps);
+				break;
 
 			case '-':
 				fps-=1;
@@ -120,15 +129,15 @@ int main() {
 		getmaxyx(stdscr, row, col); // reinica tamano terminal por si se modifico
 
 		//// Realiza una iteracion del juego
-		show(w, h, state[i%2], row, col, x, y);
-		if (running)
-			compute(w, h, state[i%2], state[(i+1)%2]);
+		if (i%10 == 0) {
+			drawScreen(w, h, state[(i/10)%2], row, col, x, y, fps);
+			if (running)
+				compute(w, h, state[(i/10)%2], state[((i/10)+1)%2]);
 
-		mvprintw(row-1, col-10, "FPS: %d", fps);
-		refresh();
+		}
 
 		// delay
-		napms(1000/fps);
+		napms(1000/fps /10);
 	}
 
 	end_loop:
@@ -137,6 +146,13 @@ int main() {
 	return 0;
 }
 
+
+void drawScreen(int w, int h, byte matrix[w][h], int rows, int columns, int x, int y, int fps) {
+	show(w, h, matrix, rows, columns, x, y);
+	mvprintw(rows-1, columns-10, "FPS: %d", fps);
+	refresh();
+
+}
 
 
 void show (int w, int h, byte matrix[w][h], int rows, int columns, int x, int y) {
