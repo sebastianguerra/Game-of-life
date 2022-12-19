@@ -97,6 +97,8 @@ int main() {
 				y++;break;
 			case 'l':
 				x--;break;
+			case 'q':
+				goto end_loop;
 		}
 
 		flushinp(); // Evita que quede input almacenado al mantener una tecla
@@ -110,6 +112,8 @@ int main() {
 		// delay
 		napms(10);
 	}
+
+	end_loop:
 
 	endwin();
 	return 0;
