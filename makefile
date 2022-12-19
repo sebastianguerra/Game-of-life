@@ -17,13 +17,16 @@ $(BIN): $(BUILD)/main.o $(BUILD)/game.o
 	$(COMPILER) $(BUILD)/main.o $(BUILD)/game.o -lncurses -o $(BIN)
 
 
-$(BUILD)/main.o: $(SRC)/main.c $(SRC)/game.h
+$(BUILD)/main.o: $(BUILD) $(SRC)/main.c $(SRC)/game.h
 	$(COMPILER) $(FLAGS) -lncurses $(SRC)/main.c -c -o $(BUILD)/main.o
 
 
-$(BUILD)/game.o: $(SRC)/game.c $(SRC)/game.h
+$(BUILD)/game.o: $(BUILD) $(SRC)/game.c $(SRC)/game.h
 	$(COMPILER) $(FLAGS) $(SRC)/game.c -c -o $(BUILD)/game.o
 
+
+$(BUILD):
+	mkdir $(BUILD)
 
 
 .PHONY: run clear debug memcheck
@@ -33,7 +36,7 @@ run: $(BIN)
 	./$(BIN)
 
 clear:
-	rm $(BUILD)/*
+	rm -rf $(BUILD)
 
 debug: $(BIN)
 	gdb $(BIN)
