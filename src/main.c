@@ -8,7 +8,7 @@
 
 
 
-void drawScreen(int w, int h, byte matix[w][h], int rows, int columns, int x, int y, int fps, long delta_ms);
+void drawScreen(int w, int h, byte matix[w][h], int rows, int columns, int x, int y, int fps, long delta_iter_ms);
 void show (int w, int h, byte matrix[w][h], int rows, int columns, int x, int y);
 
 
@@ -95,7 +95,7 @@ int main() {
 	cbreak();    // evita el buffering pero CTRL-C sigue funcionando normal
 	timeout(0);  // No espera el input en un getch()
 
-	int fps = 60;
+	int fps = 5;
 	int running = 1;
 
 
@@ -105,7 +105,7 @@ int main() {
 	getmaxyx(stdscr, row, col);
 
 	// w, h: Tamano matriz
-	int w = row, h = col;
+	int w = 500, h = 500;
 
 	// state: Pareja de matrices de tamano WxH que almacenan informacion
 	// 		  del estado actual del juego. 
@@ -123,6 +123,7 @@ int main() {
 	addPattern(w, h, state[0], 2, 4,    toad, 80, 20);
 	addPattern(w, h, state[0], 3, 3,  glider,  0, 40);
 	addPattern(w, h, state[0], 9, 50, gosperglidergun, 1, 1);
+	addPattern(w, h, state[0], 9, 50, gosperglidergun, 40, 1);
 
 
 	// x, y: Posicion actual de la vista
@@ -130,83 +131,105 @@ int main() {
 
 
 
-	struct timespec now, lastFrame, delta;
+	struct timespec now, lastFrame, lastIter, delta;
 	clock_gettime(CLOCK_REALTIME, &now);
+	clock_gettime(CLOCK_REALTIME, &lastIter);
 	clock_gettime(CLOCK_REALTIME, &lastFrame);
+	long delta_iter_ms, delta_draw_ms;
+	long last_iter_ms;
 
 	///////////////////////////////////////////////////////
 	//// Loop principal
 	///////////////////////////////////////////////////////
 	int iter = 0;
+	int hasToRedraw = 1;
 	for (;;) {
+		getmaxyx(stdscr, row, col); // reinica tamano terminal por si se modifico
+
+
 		clock_gettime(CLOCK_REALTIME, &now);
 
+
 		sub_timespec(lastFrame, now, &delta);
-		long delta_ms;
-		timespec2ms(delta, &delta_ms);
+		timespec2ms(delta, &delta_draw_ms);
+
+		sub_timespec(lastIter, now, &delta);
+		timespec2ms(delta, &delta_iter_ms);
+
+
 
 		int curr = iter%2;
 
-		switch(getch()){
+		int c = getch();
+		flushinp(); // Evita que quede input almacenado al mantener una tecla
+					// apretada y que al soltarla la siga recibiendo
+
+		switch(c){
 			// Opciones de movimiento de pantalla
-			case 'h':
+			case 'a':
 				y++;
-				goto REDRAW;
-			case 'j':
+				hasToRedraw = 1;
+				break;
+			case 's':
 				x--;
-				goto REDRAW;
-			case 'k':
+				hasToRedraw = 1;
+				break;
+			case 'w':
 				x++;
-				goto REDRAW;
-			case 'l':
+				hasToRedraw = 1;
+				break;
+			case 'd':
 				y--;
-				goto REDRAW;
+				hasToRedraw = 1;
+				break;
 
 			// Opciones para modificar FPS
 			case '-':
 				fps-=1;
-				goto REDRAW;
+				hasToRedraw = 1;
+				break;
 			case '+':
 				fps+=1;
-				goto REDRAW;
+				hasToRedraw = 1;
+				break;
 			
 			// Pausar/resumir simulacion
 			case 'p':
 				running = !running;
-				goto REDRAW;
+				hasToRedraw = 1;
+				break;
 			
 			// Dibujar de nuevo
 			case 'r':
-				goto REDRAW;
+				hasToRedraw = 1;
+				break;
 
 			// Salir
 			case 'q':
 				goto end_loop;
 		}
 
-		if(0) {
-			REDRAW:
-			drawScreen(w, h, state[curr], row, col, x, y, fps, delta_ms);
-		}
 
-		flushinp(); // Evita que quede input almacenado al mantener una tecla
-					// apretada y que al soltarla la siga recibiendo
-		getmaxyx(stdscr, row, col); // reinica tamano terminal por si se modifico
+
 
 		// Realiza una iteracion del juego
-		if (delta_ms >= 1000/fps) {
+		if (delta_iter_ms >= 1000/fps) {
 			if (running){
-				drawScreen(w, h, state[curr], row, col, x, y, fps, delta_ms);
 				compute(w, h, state[curr], state[!curr]);
+				last_iter_ms = delta_iter_ms;
+				hasToRedraw = 1;
 				iter++;
-				lastFrame = now;
+				lastIter = now;
 			}
 		}
 
-		// delay
+		if (hasToRedraw && delta_draw_ms >= 20) {
+			drawScreen(w, h, state[curr], row, col, x, y, fps, last_iter_ms);
+			hasToRedraw = 0;
+			lastFrame = now;
+		}
 		napms(1);
 	}
-
 	end_loop:
 
 	endwin();
@@ -214,10 +237,10 @@ int main() {
 }
 
 
-void drawScreen(int w, int h, byte matrix[w][h], int rows, int columns, int x, int y, int fps, long delta_ms) {
+void drawScreen(int w, int h, byte matrix[w][h], int rows, int columns, int x, int y, int fps, long delta_iter_ms) {
 	show(w, h, matrix, rows, columns, x, y);
 	mvprintw(rows-2, columns-15, "  FPS: %d", fps);
-	mvprintw(rows-1, columns-15, "Delta: %ld", delta_ms);
+	mvprintw(rows-1, columns-15, "Delta: %ld", delta_iter_ms);
 	refresh();
 
 }
