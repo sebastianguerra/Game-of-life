@@ -92,6 +92,19 @@ byte gosperglidergun[9][50] = {
 	{0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 };
 
+byte Rpentomimo[3][3] = {
+	{0, 1, 1}, // _OO
+	{1, 1, 0}, // OO_
+	{0, 1, 0}  // _O_
+};
+
+byte acorn[3][7] = {
+	{1, 1, 0, 0, 1, 1, 1}, // OO__OOO
+	{0, 0, 0, 1, 0, 0, 0}, // ___O___
+	{0, 1, 0, 0, 0, 0, 0}  // _O_____
+};
+
+
 
 
 
@@ -129,14 +142,17 @@ int main() {
 
 
 	// Patrones de prueba
-	addPattern(w, h, state[0], 3, 3,  glider,  0, 20);
-	addPattern(w, h, state[0], 3, 3,  glider, 10, 20);
-	addPattern(w, h, state[0], 3, 3, blinker, 10, 20);
-	addPattern(w, h, state[0], 3, 3, blinker, 20, 20);
-	addPattern(w, h, state[0], 2, 4,    toad, 80, 20);
-	addPattern(w, h, state[0], 3, 3,  glider,  0, 40);
-	addPattern(w, h, state[0], 9, 50, gosperglidergun, 1, 1);
-	addPattern(w, h, state[0], 9, 50, gosperglidergun, 40, 1);
+	// addPattern(w, h, state[0], 3, 3,  glider,  0, 20);
+	// addPattern(w, h, state[0], 3, 3,  glider, 10, 20);
+	// addPattern(w, h, state[0], 3, 3, blinker, 10, 20);
+	// addPattern(w, h, state[0], 3, 3, blinker, 20, 20);
+	// addPattern(w, h, state[0], 2, 4,    toad, 80, 20);
+	// addPattern(w, h, state[0], 3, 3,  glider,  0, 40);
+	// addPattern(w, h, state[0], 9, 50, gosperglidergun, 1, 1);
+	// addPattern(w, h, state[0], 9, 50, gosperglidergun, 40, 1);
+	// addPattern(w, h, state[0], 3, 3, Rpentomimo, 100, 50);
+	addPattern(w, h, state[0], 3, 7, acorn, 150, 50);
+
 
 
 	// x, y: Posicion actual de la vista
